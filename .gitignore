@@ -4,3 +4,4 @@
 *.jar
 *.biglybt
 *.class
+.DS_Store
