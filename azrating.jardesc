@@ -12,7 +12,6 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
         <javaElement handleIdentifier="=azrating/&lt;com.aelitis.azureus.plugins.rating.ui"/>
-        <file path="/azrating/plugin.properties"/>
         <javaElement handleIdentifier="=azrating/&lt;com.aelitis.azureus.plugins.rating.updater"/>
         <javaElement handleIdentifier="=azrating/&lt;com.aelitis.azureus.plugins.rating"/>
         <javaElement handleIdentifier="=azrating/&lt;com.aelitis.azureus.plugins.rating.internat"/>
