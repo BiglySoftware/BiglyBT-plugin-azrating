@@ -997,7 +997,7 @@ RatingsUpdater
 			
 			String chat_msg = message.getMessage();
 			
-			if ( chat_msg.contains( "http://wiki.vuze.com/w/Swarm_Merging" )){
+			if ( chat_msg.contains( "http://wiki.vuze.com/w/Swarm_Merging" ) || chat_msg.contains( "http://wiki.biglybt.com/w/Swarm_Merging" )){
 				
 				has_info = true;
 			}
@@ -1035,7 +1035,7 @@ RatingsUpdater
 		
 		if ( !has_info ){
 		
-			chat.sendMessage( "See http://wiki.vuze.com/w/Swarm_Merging[[Swarm%20Merging]] for help", flags, options);
+			chat.sendMessage( "See http://wiki.biglybt.com/w/Swarm_Merging[[Swarm%20Merging]] for help", flags, options);
 		}
 	}
 	
