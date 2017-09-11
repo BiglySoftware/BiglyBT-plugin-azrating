@@ -87,6 +87,8 @@ RatingsUpdater
     private static final int STALL_MIN_DL_AGE		= 12*60*60*1000;
     private static final int STALL_TRIGGER_PERIOD	= 2*60*60*1000;
     
+    private static final Object	DOWNLOAD_CHAT_KEY = new Object();
+    
 	private final RatingPlugin 		plugin;
 	private final PluginInterface	plugin_interface;
 	
@@ -517,7 +519,7 @@ RatingsUpdater
 							public void 
 							runSupport() 
 							{
-								final BuddyPluginBeta.ChatInstance chat = BuddyPluginUtils.getChat( download );
+								final BuddyPluginBeta.ChatInstance chat = getChatForDownload( download );
 									
 								if ( chat != null ){
 										
@@ -850,7 +852,7 @@ RatingsUpdater
 				public void 
 				runSupport() 
 				{
-					final ChatInstance chat = BuddyPluginUtils.getChat( download );
+					final ChatInstance chat = getChatForDownload( download );
 											
 					if ( chat != null ){
 							
@@ -1732,7 +1734,7 @@ RatingsUpdater
 								
 								if ( message_count.intValue() > 0 ){
 									
-									BuddyPluginBeta.ChatInstance chat = BuddyPluginUtils.getChat( download );
+									BuddyPluginBeta.ChatInstance chat =  getChatForDownload( download );
 				
 									if ( chat != null ){
 										
@@ -1889,7 +1891,7 @@ RatingsUpdater
 						public void 
 						runSupport() 
 						{
-							final BuddyPluginBeta.ChatInstance chat = BuddyPluginUtils.getChat( download );
+							final BuddyPluginBeta.ChatInstance chat =  getChatForDownload( download );
 								
 							if ( chat != null ){
 									
@@ -2019,7 +2021,25 @@ RatingsUpdater
 		}
 	} 
 
-
+	private ChatInstance
+	getChatForDownload(
+		Download		download )
+	{
+		synchronized( DOWNLOAD_CHAT_KEY ) {
+		
+			ChatInstance chat = (ChatInstance)download.getUserData( DOWNLOAD_CHAT_KEY );
+			
+			if ( chat == null || chat.isDestroyed()) {
+					
+				chat = BuddyPluginUtils.getChat( download );
+			
+				download.setUserData( DOWNLOAD_CHAT_KEY, chat );
+			}
+			
+			return( chat );
+		}
+	}
+	
 	private void
 	log(
 		String	str )
