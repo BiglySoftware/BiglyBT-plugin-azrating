@@ -62,7 +62,7 @@ public class RatingColumn implements TableCellRefreshListener,
     }        
     Download download = (Download) dataSource;
     
-    if ( !plugin.isRatingEnabled(download)){
+    if ( !plugin.isRatingEnabled(download, false )){
 		return;
 	}
     
@@ -168,7 +168,7 @@ public class RatingColumn implements TableCellRefreshListener,
 
 		Download download = (Download) dataSource;
 		
-		if ( !plugin.isRatingEnabled(download)){
+		if ( !plugin.isRatingEnabled(download, false)){
 			return;
 		}
 		

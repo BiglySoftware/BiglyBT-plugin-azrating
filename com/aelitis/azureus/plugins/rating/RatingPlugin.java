@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.biglybt.core.config.COConfigurationManager;
 import com.biglybt.core.util.AESemaphore;
@@ -90,6 +91,8 @@ public class RatingPlugin implements UnloadablePlugin, PluginListener {
   
   private RatingUI			ui;
    
+  private AtomicBoolean	init_complete = new AtomicBoolean( false );
+  
   @Override
   public void
   initialize(
@@ -200,7 +203,8 @@ public class RatingPlugin implements UnloadablePlugin, PluginListener {
   
   public boolean
   isRatingEnabled(
-	Download		download )
+	Download		download,
+	boolean			can_wait )
   {
 	  if ( download.getTorrent() != null && !download.getFlag( Download.FLAG_METADATA_DOWNLOAD )){
 
@@ -213,6 +217,14 @@ public class RatingPlugin implements UnloadablePlugin, PluginListener {
 				  if ( networks[i].equalsIgnoreCase( "Public" )){
 
 					 return( true );
+				  }
+			  }
+			  
+			  if ( !can_wait ){
+				  
+				  if ( !init_complete.get()){
+					  
+					  return( false );
 				  }
 			  }
 			  
@@ -237,7 +249,9 @@ public class RatingPlugin implements UnloadablePlugin, PluginListener {
   
   @Override
   public void initializationComplete() {
-    updater.initialize();        
+	  init_complete.set( true );
+	  
+	  updater.initialize();        
   }
   
   

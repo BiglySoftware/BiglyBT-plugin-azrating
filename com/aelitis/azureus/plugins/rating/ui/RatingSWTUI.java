@@ -135,7 +135,7 @@ RatingSWTUI
 	            return;
 	          }
 	          
-	          if ( !plugin.isRatingEnabled(download)){
+	          if ( !plugin.isRatingEnabled(download,false)){
 	        	  return;
 	          }
 	          

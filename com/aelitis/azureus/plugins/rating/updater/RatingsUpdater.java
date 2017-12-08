@@ -233,7 +233,7 @@ RatingsUpdater
 			return;
 		}
 		
-		if ( plugin.isRatingEnabled(download)){
+		if ( plugin.isRatingEnabled(download, true)){
 			
 			if ( loadRatingsFromDownload( download ).needPublishing()){
 				
