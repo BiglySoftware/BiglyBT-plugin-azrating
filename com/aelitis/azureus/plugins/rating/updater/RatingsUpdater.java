@@ -570,6 +570,8 @@ RatingsUpdater
 												
 												Map<String,Object>	options = new HashMap<String, Object>();
 												
+												chat.setSharedNickname( false );
+												
 												chat.sendMessage( message, flags, options );																									
 											}
 										});
@@ -1920,6 +1922,8 @@ RatingsUpdater
 											flags.put( BuddyPluginBeta.FLAGS_MSG_ORIGIN_KEY, BuddyPluginBeta.FLAGS_MSG_ORIGIN_RATINGS );
 											
 											Map<String,Object>	options = new HashMap<String, Object>();
+											
+											chat.setSharedNickname( false );
 											
 											chat.sendMessage( f_msg, flags, options );
 										}
