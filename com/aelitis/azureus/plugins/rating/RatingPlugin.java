@@ -60,11 +60,7 @@ public class RatingPlugin implements UnloadablePlugin, PluginListener {
 
   static{
 	  try{
-		  
-		  	// fix missing default for fancy menu causing settings not to be remembered
-		  
-		  COConfigurationManager.setBooleanDefault( "Library.showFancyMenu", true );
-		  
+
 		  	// switch default for chat sound notifications
 		  
 		  if ( !COConfigurationManager.doesParameterNonDefaultExist( "azbuddy.chat.notif.sound.enable" )){
