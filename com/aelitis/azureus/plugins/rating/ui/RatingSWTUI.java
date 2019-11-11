@@ -47,15 +47,7 @@ RatingSWTUI
 {
 	private static final String COLUMN_ID_RATING = "RatingColumn";  
 
-	private static String[] table_names = {
-		TableManager.TABLE_MYTORRENTS_INCOMPLETE,
-		TableManager.TABLE_MYTORRENTS_COMPLETE,
-		TableManager.TABLE_MYTORRENTS_ALL_BIG,
-		TableManager.TABLE_MYTORRENTS_COMPLETE_BIG,
-		TableManager.TABLE_MYTORRENTS_INCOMPLETE_BIG,
-		TableManager.TABLE_MYTORRENTS_UNOPENED,
-		TableManager.TABLE_MYTORRENTS_UNOPENED_BIG,
-	};
+	private static String[] table_names = TableManager.TABLE_MYTORRENTS_ALL;
 
 	private RatingPlugin		plugin;
 	private UISWTInstance		swt_ui;
