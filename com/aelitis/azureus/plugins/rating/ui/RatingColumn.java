@@ -120,20 +120,23 @@ public class RatingColumn implements TableCellRefreshListener,
       return;
 
   	if (swt_ui != null) {
-	    Image image = RatingImageUtil.createStarLineImage(average, personalScore,
-					swt_ui.getDisplay());
-	    int cellWidth = cell.getWidth();
-	  	if (cellWidth > 0 && cellWidth < image.getBounds().width) {
-	  		ImageData data = image.getImageData(); 
-	  		image.dispose();
-	  		data = data.scaledTo(cell.getWidth(), data.height);
-	  		image = new Image(swt_ui.getDisplay(), data);
-	  	}
-			Graphic graphic = swt_ui.createGraphic(image);
-
-	    // dispose of previous graphic
-	    dispose(cell);
-	    cell.setGraphic(graphic);
+  		Image image = RatingImageUtil.createStarLineImage(average, personalScore,
+  				swt_ui.getDisplay());
+  		
+  		if ( image != null ){
+	  		int cellWidth = cell.getWidth();
+	  		if (cellWidth > 0 && cellWidth < image.getBounds().width) {
+	  			ImageData data = image.getImageData(); 
+	  			image.dispose();
+	  			data = data.scaledTo(cell.getWidth(), data.height);
+	  			image = new Image(swt_ui.getDisplay(), data);
+	  		}
+	  		Graphic graphic = swt_ui.createGraphic(image);
+	
+	  		// dispose of previous graphic
+	  		dispose(cell);
+	  		cell.setGraphic(graphic);
+  		}
   	}
     
     cell.setToolTip(toolTip);
