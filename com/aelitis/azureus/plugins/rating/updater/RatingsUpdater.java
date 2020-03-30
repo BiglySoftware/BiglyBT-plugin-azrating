@@ -927,9 +927,31 @@ RatingsUpdater
 			
 			String title = rc.getTitle();
 			
-			if ( title.length() > 150 ){
+			boolean title_truncated = false;
+			
+			while( title.length() > 32 ){
 				
-				title = title.substring( 0, 150 ) + "...";
+				int enc_len = UrlUtils.encode( title ).getBytes( Constants.UTF_8 ).length;
+			
+				if ( enc_len > 150 ){
+					
+					title_truncated = true;
+					
+					title = title.substring( 0, title.length() - 1 );
+					
+					if ( Character.isHighSurrogate( title.charAt( title.length()-1 ))){
+						
+						title = title.substring( 0, title.length() - 1 );
+					}
+				}else{
+					
+					break;
+				}
+			}
+			
+			if ( title_truncated ){
+				
+				title = title + "...";
 			}
 			
 			String uri = UrlUtils.getMagnetURI( hash, title, rc.getNetworks());
@@ -956,11 +978,29 @@ RatingsUpdater
 			
 				String path = file.getTorrentFile().getRelativePath();
 				
-				if ( path.length() > 150 ){
+				boolean path_truncated = false;
+				
+				while( path.length() > 32 ){
 					
-					path = "..." + path.substring( path.length() - 150 );
+					int enc_len = path.getBytes( Constants.UTF_8 ).length;
+				
+					if ( enc_len > 150 ){
+						
+						path_truncated = true;
+						
+						path = path.substring( Character.isHighSurrogate( path.charAt(0))?2:1 );
+						
+					}else{
+						
+						break;
+					}
 				}
 				
+				if ( path_truncated ){
+					
+					path = "..." + path;
+				}
+								
 				file_str = "file '" + path + "'";
 			}
 			
