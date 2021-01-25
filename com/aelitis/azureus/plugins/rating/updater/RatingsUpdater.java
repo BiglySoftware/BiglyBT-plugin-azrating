@@ -53,7 +53,8 @@ import com.biglybt.pif.download.DownloadScrapeResult;
 import com.biglybt.pif.torrent.TorrentAttribute;
 import com.biglybt.pif.torrent.TorrentManager;
 import com.biglybt.pifimpl.local.PluginCoreUtils;
-
+import com.biglybt.core.config.COConfigurationManager;
+import com.biglybt.core.config.ParameterListener;
 import com.biglybt.core.content.ContentException;
 import com.biglybt.core.content.RelatedContent;
 import com.biglybt.core.content.RelatedContentLookupListener;
@@ -68,7 +69,7 @@ import com.aelitis.azureus.plugins.rating.RatingPlugin;
 
 public class 
 RatingsUpdater 	
-	implements DownloadManagerListener
+	implements DownloadManagerListener, ParameterListener
 {
 	private static final int READ_PUBLIC_TIMEOUT 		= 20*1000;
 	private static final int READ_NON_PUBLIC_TIMEOUT 	= 80*1000;
@@ -115,6 +116,8 @@ RatingsUpdater
 	private Object					reseed_bytes_key = new Object();
 	private Object					reseed_asked_key = new Object();
 	
+	private volatile boolean enable_auto_chat;
+	
 	private volatile boolean	destroyed;
 	
 	public 
@@ -130,6 +133,8 @@ RatingsUpdater
 	    attributeComment		= tm.getPluginAttribute("comment");    
 	    attributeGlobalRating  	= tm.getPluginAttribute("globalRating");
 	    attributeChatState  	= tm.getPluginAttribute("chatState");
+	    
+	    COConfigurationManager.addAndFireParameterListener( "azbuddy.dchat.ui.enable.auto.dl.chat", this );
 	}
 	  
 	public void 
@@ -196,6 +201,14 @@ RatingsUpdater
 				});  
 	}
 
+	@Override
+	public void 
+	parameterChanged(
+		String parameterName )
+	{
+		enable_auto_chat = COConfigurationManager.getBooleanParameter( "azbuddy.dchat.ui.enable.auto.dl.chat", true );
+	}
+	
 	public void
 	destroy()
 	{
@@ -213,6 +226,8 @@ RatingsUpdater
 		
 			t.cancel();
 		}
+		
+	    COConfigurationManager.removeParameterListener( "azbuddy.dchat.ui.enable.auto.dl.chat", this);
 	}
 	
 	@Override
@@ -519,6 +534,11 @@ RatingsUpdater
 							public void 
 							runSupport() 
 							{
+								if ( !enable_auto_chat ){
+									
+									return;
+								}
+
 								final BuddyPluginBeta.ChatInstance chat = getChatForDownload( download );
 									
 								if ( chat != null ){
@@ -854,6 +874,11 @@ RatingsUpdater
 				public void 
 				runSupport() 
 				{
+					if ( !enable_auto_chat ){
+						
+						return;
+					}
+
 					final ChatInstance chat = getChatForDownload( download );
 											
 					if ( chat != null ){
@@ -1071,6 +1096,8 @@ RatingsUpdater
 		flags.put( "f", 1 );
 
 		Map<String,Object>	options = new HashMap<String, Object>();
+		
+		chat.setSharedNickname( false );
 		
 		for ( String msg: msg_map.values()){
 			
@@ -1765,6 +1792,11 @@ RatingsUpdater
 					public void 
 					runSupport() 
 					{
+						if ( !enable_auto_chat ){
+							
+							return;
+						}
+
 						Map<String,Object> peek_data = BuddyPluginUtils.peekChat( download );
 							
 						if ( peek_data != null ){
@@ -1933,6 +1965,11 @@ RatingsUpdater
 						public void 
 						runSupport() 
 						{
+							if ( !enable_auto_chat ){
+								
+								return;
+							}
+							
 							final BuddyPluginBeta.ChatInstance chat =  getChatForDownload( download );
 								
 							if ( chat != null ){
@@ -2074,7 +2111,7 @@ RatingsUpdater
 			ChatInstance chat = (ChatInstance)download.getUserData( DOWNLOAD_CHAT_KEY );
 			
 			if ( chat == null || chat.isDestroyed()) {
-					
+									
 				chat = BuddyPluginUtils.getChat( download );
 			
 				download.setUserData( DOWNLOAD_CHAT_KEY, chat );
