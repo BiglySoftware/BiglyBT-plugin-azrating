@@ -27,6 +27,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Display;
 
+import com.biglybt.ui.swt.Utils;
+
 /**
  * @author TuxPaper
  * @created Jan 10, 2006
@@ -141,17 +143,29 @@ public class RatingImageUtil {
 					}
 
 				if (widthLine > 0) {
+					
+					int	col1;
+					int col2;
+					
+					if ( Utils.isDarkAppearanceNative()){
+						col1 = (int)0xFF20FF;
+						col2 = (int)0xFF107F;
+					}else{
+						col1 = (int)0x0020FF;
+						col2 = (int)0x00107F;
+					}
+					
 					byte[] alphas = new byte[widthLine];
 					Arrays.fill(alphas, (byte) 0x90);
 
 					int[] pixels = new int[widthLine];
-					Arrays.fill(pixels, (int) 0x0020FF);
+					Arrays.fill(pixels, col1 );
 
 					imageData.setAlphas(0, bounds.height - 2, widthLine, alphas, 0);
 					imageData.setPixels(0, bounds.height - 2, widthLine, pixels, 0);
 
 					Arrays.fill(alphas, (byte) 0x40);
-					Arrays.fill(pixels, (int) 0x00107F);
+					Arrays.fill(pixels, col2 );
 					imageData.setAlphas(0, bounds.height - 1, widthLine, alphas, 0);
 					imageData.setPixels(0, bounds.height - 1, widthLine, pixels, 0);
 				}

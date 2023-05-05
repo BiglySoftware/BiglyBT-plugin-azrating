@@ -26,12 +26,16 @@ package com.aelitis.azureus.plugins.rating.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biglybt.core.config.COConfigurationManager;
+import com.biglybt.core.config.ParameterListener;
 import com.biglybt.pif.PluginInterface;
 import com.biglybt.pif.download.Download;
 import com.biglybt.pif.ui.UIInstance;
 import com.biglybt.pif.ui.UIManager;
 import com.biglybt.pif.ui.menus.MenuItem;
+import com.biglybt.pif.ui.menus.MenuItemFillListener;
 import com.biglybt.pif.ui.menus.MenuItemListener;
+import com.biglybt.pif.ui.menus.MenuManager;
 import com.biglybt.pif.ui.tables.TableColumn;
 import com.biglybt.pif.ui.tables.TableContextMenuItem;
 import com.biglybt.pif.ui.tables.TableManager;
@@ -43,7 +47,7 @@ import com.aelitis.azureus.plugins.rating.RatingUI;
 
 public class 
 RatingSWTUI 
-	implements RatingUI
+	implements RatingUI, ParameterListener
 {
 	private static final String COLUMN_ID_RATING = "RatingColumn";  
 
@@ -56,6 +60,8 @@ RatingSWTUI
 	private List<TableContextMenuItem>	table_menus 	= new ArrayList<TableContextMenuItem>();
 	private TableManager tm;
 
+	private int sort_order = 0;
+	
 	public 
 	RatingSWTUI(
 		RatingPlugin	_plugin,
@@ -69,8 +75,31 @@ RatingSWTUI
 		addMyTorrentsColumn();
 
 		addMyTorrentsMenu();
+		
+		COConfigurationManager.addAndFireParameterListener( "ratingplugin.col.sort", this );
 	}
 	  
+	@Override
+	public void 
+	parameterChanged(
+		String parameterName)
+	{
+		sort_order = COConfigurationManager.getIntParameter( parameterName, 0 );
+	}
+	
+	protected int
+	getSortOrder()
+	{
+		return( sort_order );
+	}
+	
+	protected void
+	setSortOrder(
+		int	so )
+	{
+		COConfigurationManager.setParameter( "ratingplugin.col.sort", so );
+	}
+	
 	protected RatingPlugin
 	getPlugin()
 	{
@@ -104,6 +133,44 @@ RatingSWTUI
 	    activityColumn.setVisible( true );
 	    activityColumn.addListeners(ratingColumn);
 	    
+	    
+	    MenuManager  menu_manager 	= uiManager.getMenuManager();
+	    
+	    TableContextMenuItem menuShowIcon = activityColumn.addContextMenuItem(
+				"RatingPlugin.column.sort", TableColumn.MENU_STYLE_HEADER);
+	    
+		menuShowIcon.setStyle(TableContextMenuItem.STYLE_MENU );
+		
+		menuShowIcon.addFillListener(new MenuItemFillListener() {
+			@Override
+			public void 
+			menuWillBeShown(
+				MenuItem menu, Object data) 
+			{
+				menu.removeAllChildItems();
+				
+				MenuItem sort_global = menu_manager.addMenuItem( menu, "RatingPlugin.column.sort.global" );
+
+				sort_global.setStyle( MenuItem.STYLE_RADIO );
+
+				int sort = getSortOrder();
+				
+				sort_global.setData( sort == 0 );
+
+				MenuItem sort_personal = menu_manager.addMenuItem( menu, "RatingPlugin.column.sort.personal" );
+
+				sort_personal.setStyle( MenuItem.STYLE_RADIO );
+
+				sort_personal.setData( sort != 0 );
+				
+				MenuItemListener listener = (mi,target)->{
+					setSortOrder( mi==sort_global?0:1);
+				};
+				
+				sort_global.addListener( listener );
+				sort_personal.addListener( listener );
+			}
+		});
 	    tableManager.addColumn(activityColumn);
 	    
 	    table_columns.add( activityColumn );
@@ -159,20 +226,22 @@ RatingSWTUI
 	  public void
 	  destroy()
 	  {
-			for ( TableColumn c: table_columns ){
-				
-				c.remove();
-			}
-			
-			table_columns.clear();
-			
-			for ( TableContextMenuItem m: table_menus ){
-				
-				m.remove();
-			}
-			
-			table_menus.clear();
+		  for ( TableColumn c: table_columns ){
+
+			  c.remove();
+		  }
+
+		  table_columns.clear();
+
+		  for ( TableContextMenuItem m: table_menus ){
+
+			  m.remove();
+		  }
+
+		  table_menus.clear();
 
 		  RatingImageUtil.destroy();
+		  
+		  COConfigurationManager.removeParameterListener( "ratingplugin.col.sort", this );
 	  }
 }

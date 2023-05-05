@@ -42,12 +42,15 @@ import com.biglybt.ui.swt.utils.SWTRunnable;
 public class RatingColumn implements TableCellRefreshListener,
 		TableCellDisposeListener, TableCellMouseListener {
   
-  private RatingPlugin plugin;
+  private final RatingPlugin plugin;
+  private final RatingSWTUI rating_ui;
+  private final UISWTInstance	swt_ui;
+  private final LocaleUtilities localeTxt;
+  
   private RatingsUpdater updater;
-  private UISWTInstance	swt_ui;
-	private LocaleUtilities localeTxt;
   
   public RatingColumn(RatingSWTUI ui) {
+	rating_ui = ui;
     plugin = ui.getPlugin();
     swt_ui = ui.getSWTUI();
     
@@ -116,7 +119,7 @@ public class RatingColumn implements TableCellRefreshListener,
 	  	}
 		}
     
-    if (!cell.setSortValue(average) && cell.isValid())
+    if (!cell.setSortValue(rating_ui.getSortOrder()==0?average:personalScore) && cell.isValid())
       return;
 
   	if (swt_ui != null) {
