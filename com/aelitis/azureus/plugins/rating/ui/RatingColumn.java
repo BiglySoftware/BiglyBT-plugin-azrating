@@ -127,8 +127,16 @@ public class RatingColumn implements TableCellRefreshListener,
   				swt_ui.getDisplay());
   		
   		if ( image != null ){
+  			int imgWidth = image.getBounds().width;
+  			TableColumn tableColumn = cell.getTableColumn();
+  				// +4 is to deal with fact that cell has margin of 1 both sides plus 2 added
+  				// obviously the proper solution isn't this... however if someone selects "set preferred width" it
+  				// would be nice if this code didn't end up still scaling the image
+			if (tableColumn != null && tableColumn.getPreferredWidth() < imgWidth+4) {
+				tableColumn.setPreferredWidth(imgWidth+4);
+			}
 	  		int cellWidth = cell.getWidth();
-	  		if (cellWidth > 0 && cellWidth < image.getBounds().width) {
+	  		if (cellWidth > 0 && cellWidth < imgWidth ) {
 	  			ImageData data = image.getImageData(); 
 	  			image.dispose();
 	  			data = data.scaledTo(cell.getWidth(), data.height);
